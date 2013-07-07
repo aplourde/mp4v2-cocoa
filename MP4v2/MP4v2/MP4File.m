@@ -48,24 +48,34 @@
     
     
     NSFileManager *fileManager = [NSFileManager defaultManager];
+    [fileManager removeItemAtPath:tempOutputPath error:nil];
     unsigned long long originalFileSize = [[[fileManager attributesOfItemAtPath:filePath error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
-    __block BOOL noErr;
+    __block BOOL done = NO;
+    __block BOOL success = NO;
     
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        noErr = MP4Optimize([filePath UTF8String], [tempOutputPath UTF8String]);
+    dispatch_async(
+       dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+           success = MP4Optimize([filePath UTF8String], [tempOutputPath UTF8String]);
+           done = YES;
+           if (!success) {
+               NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+               [errorDetail setValue:@"Failed to optimize mp4 file" forKey:NSLocalizedDescriptionKey];
+               *outError = [NSError errorWithDomain:@"MP42Error"
+                                               code:100
+                                           userInfo:errorDetail];
+           }
     });
     
-    while (!noErr) {
+    while (!done) {
         unsigned long long fileSize = [[[fileManager attributesOfItemAtPath:tempOutputPath error:nil] valueForKey:NSFileSize] unsignedLongLongValue];
 		if (delegate)
 			[delegate progressChanged:((double)fileSize / originalFileSize) * 100];
         usleep(450000);
     }
     
-    if (noErr) {
-		NSError *error;
-		[fileManager removeItemAtPath:filePath error:&error];
-		[fileManager moveItemAtPath:tempOutputPath toPath:filePath error:&error];
+    if (success) {
+		[fileManager removeItemAtPath:filePath error:outError];
+		[fileManager moveItemAtPath:tempOutputPath toPath:filePath error:outError];
     }
     return YES;
 }

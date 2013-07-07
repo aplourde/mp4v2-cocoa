@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MP4File.h"
+#import "MP4Metadata.h"
 
 @interface MP4v2 : NSObject
 
