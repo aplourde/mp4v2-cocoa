@@ -36,7 +36,7 @@
 @property (nonatomic, unsafe_unretained) id <MP4FileDelegate> delegate;
 
 
-- (id) initWithFilePath:(NSString *)path;
+- (id) initWithFilePath:(NSString *)path outError:(NSError **)outError;
 - (BOOL) save:(NSError **)outError;
 - (CGSize) videoSize;
 

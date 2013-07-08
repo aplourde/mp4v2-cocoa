@@ -27,6 +27,7 @@ typedef enum {
     APMP4MediaType type;
     NSImage *artwork;
     NSString *studio;
+    NSString *screenFormat;
     NSArray *cast;
     NSArray *directors;
     NSArray *screenwriters;
@@ -50,6 +51,7 @@ typedef enum {
 @property(nonatomic) APMP4MediaType type;
 @property(nonatomic, retain) NSImage *artwork;
 @property(nonatomic, retain) NSString *studio;
+@property(nonatomic, retain) NSString *screenFormat;
 @property(nonatomic, retain) NSArray *cast;
 @property(nonatomic, retain) NSArray *directors;
 @property(nonatomic, retain) NSArray *screenwriters;

@@ -13,11 +13,17 @@
 @synthesize metadata;
 @synthesize delegate;
 
-- (id) initWithFilePath:(NSString *)path
-{
+- (id) initWithFilePath:(NSString *)path outError:(NSError **)outError {
     if (self = [super init])
 	{
 		fileHandle = MP4Modify([path UTF8String], 0);
+        if (MP4_INVALID_FILE_HANDLE == fileHandle) {
+            NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+            [errorDetail setValue:@"Failed to open mp4 file" forKey:NSLocalizedDescriptionKey];
+            *outError = [NSError errorWithDomain:@"MP42Error"
+                                            code:100
+                                        userInfo:errorDetail];
+        }
         filePath = path;
         metadata = [[MP4Metadata alloc] initWithFilePath:path fileHandle:fileHandle];
 		if (!fileHandle) {
@@ -40,7 +46,16 @@
         }
         return NO;
     }
-    [self.metadata writeMetadataWithFileHandle:fileHandle];
+    BOOL writeMetadataSuccess = [self.metadata writeMetadataWithFileHandle:fileHandle];
+    if (!writeMetadataSuccess) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        [errorDetail setValue:@"Failed to write metadata" forKey:NSLocalizedDescriptionKey];
+        *outError = [NSError errorWithDomain:@"MP42Error"
+                                        code:100
+                                    userInfo:errorDetail];
+        return NO;
+        
+    }
     MP4Close(fileHandle, 0);
     
     NSString *tempOutputFileName = [[filePath lastPathComponent] stringByAppendingString:@".tmp"];

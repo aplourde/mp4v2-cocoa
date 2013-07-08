@@ -21,6 +21,7 @@
 @synthesize type;
 @synthesize artwork;
 @synthesize studio;
+@synthesize screenFormat;
 @synthesize cast;
 @synthesize directors;
 @synthesize screenwriters;
@@ -119,6 +120,9 @@
                     self.screenwriters = [NSArray arrayWithArray:[dma valueForKey:@"screenwriters"]];
                 if ([dma valueForKey:@"studio"] != nil)
                     self.studio = [dma valueForKey:@"studio"];
+                if ([dma valueForKey:@"asset-info"] != nil && [[dma valueForKey:@"asset-info"] valueForKey:@"screen-format"] != nil) {
+                    self.screenFormat = [[dma valueForKey:@"asset-info"] valueForKey:@"screen-format"];
+                }
             }
         }
         MP4ItmfItemListFree(list);
@@ -132,7 +136,10 @@
 	
     const MP4Tags* tags = MP4TagsAlloc();
 	
-    MP4TagsFetch(tags, fileHandle);
+    BOOL success = MP4TagsFetch(tags, fileHandle);
+    if (!success) {
+        return NO;
+    }
 	
     if (self.name) {
         MP4TagsSetName(tags, [self.name UTF8String]);
@@ -172,8 +179,11 @@
         MP4TagsSetArtwork(tags, 0, &newArtwork);
     }
 	
-    MP4TagsStore(tags, fileHandle);
+    success = MP4TagsStore(tags, fileHandle);
     MP4TagsFree(tags);
+    if (!success) {
+        return NO;
+    }
 	
     /* Rewrite extended metadata using the generic iTMF api */
     if (self.cast || self.directors || self.producers || self.screenwriters || self.studio) {
@@ -210,6 +220,9 @@
         if (self.studio) {
             [dict setObject:self.studio forKey:@"studio"];
         }
+        if (self.screenFormat) {
+            [dict setObject:[NSDictionary dictionaryWithObjectsAndKeys:self.screenFormat, @"screen-format", nil] forKey:@"asset-info"];
+        }
         
         NSData *serializedPlist = [NSPropertyListSerialization
 								   dataFromPropertyList:dict
@@ -236,7 +249,10 @@
         data->value = (uint8_t*)malloc( data->valueSize );
         memcpy( data->value, [serializedPlist bytes], data->valueSize );
 		
-        MP4ItmfAddItem(fileHandle, newItem);
+        success = MP4ItmfAddItem(fileHandle, newItem);
+        if (!success) {
+            return NO;
+        }
     }
 	
     return YES;
@@ -251,6 +267,7 @@
     NSLog(@"shortDescription : %@",self.shortDescription);
     NSLog(@"longDescription : %@",self.longDescription);
     NSLog(@"hd : %c",self.hd);
+    NSLog(@"screenFormat : %@",self.screenFormat);
     NSLog(@"type : %u",self.type);
     NSLog(@"artwork : %@",self.artwork);
     NSLog(@"cast : %@",self.cast);
