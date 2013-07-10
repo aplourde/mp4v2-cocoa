@@ -10,12 +10,12 @@
 #import <mp4v2/mp4v2.h>
 
 typedef enum {
-    APMP4MediaTypeMovie = 9,
-    APMP4MediaTypeTvShow = 10
-} APMP4MediaType;
+    MP4MediaTypeMovie = 9,
+    MP4MediaTypeTvShow = 10
+} MP4MediaType;
 
 @interface MP4Metadata : NSObject {
-    
+
     NSString *sourcePath;
     NSString *name;
     NSString *comments;
@@ -24,7 +24,7 @@ typedef enum {
     NSString *shortDescription;
     NSString *longDescription;
     BOOL hd;
-    APMP4MediaType type;
+    MP4MediaType type;
     NSImage *artwork;
     NSString *studio;
     NSString *screenFormat;
@@ -34,11 +34,11 @@ typedef enum {
     NSArray *producers;
 }
 
-- (id) initWithFilePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
+- (id)initWithFilePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
 
-- (void) printCurrentTags;
+- (void)printCurrentTags;
 
-- (BOOL) writeMetadataWithFileHandle: (MP4FileHandle *)fileHandle;
+- (BOOL)writeMetadataWithFileHandle:(MP4FileHandle *)fileHandle;
 
 @property(nonatomic, retain) NSString *sourcePath;
 @property(nonatomic, retain) NSString *name;
@@ -48,7 +48,7 @@ typedef enum {
 @property(nonatomic, retain) NSString *shortDescription;
 @property(nonatomic, retain) NSString *longDescription;
 @property(nonatomic) BOOL hd;
-@property(nonatomic) APMP4MediaType type;
+@property(nonatomic) MP4MediaType type;
 @property(nonatomic, retain) NSImage *artwork;
 @property(nonatomic, retain) NSString *studio;
 @property(nonatomic, retain) NSString *screenFormat;

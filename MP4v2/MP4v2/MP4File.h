@@ -16,28 +16,30 @@
 
 @optional
 
-- (void) progressChanged:(double)newProgress;
+- (void)progressChanged:(double)newProgress;
 
 @end
 
 @interface MP4File : NSObject {
-    
+
 @private
-    
-    MP4FileHandle	fileHandle;
-    NSString		*filePath;
+
+    MP4FileHandle fileHandle;
+    NSString *filePath;
 
 @protected
-    
-    MP4Metadata    *metadata;
+
+    MP4Metadata *metadata;
 }
 
 @property(readonly) MP4Metadata *metadata;
-@property (nonatomic, unsafe_unretained) id <MP4FileDelegate> delegate;
+@property(nonatomic, unsafe_unretained) id <MP4FileDelegate> delegate;
 
 
-- (id) initWithFilePath:(NSString *)path outError:(NSError **)outError;
-- (BOOL) save:(NSError **)outError;
-- (CGSize) videoSize;
+- (id)initWithFilePath:(NSString *)path outError:(NSError **)outError;
+
+- (BOOL)save:(NSError **)outError;
+
+- (CGSize)videoSize;
 
 @end
