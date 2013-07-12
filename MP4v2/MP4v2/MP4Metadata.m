@@ -176,7 +176,10 @@
         newArtwork.data = (void *) [bitmapData bytes];
         newArtwork.size = (uint32_t) [bitmapData length];
         newArtwork.type = MP4_ART_PNG;
-        MP4TagsSetArtwork(tags, 0, &newArtwork);
+        if (!tags->artworkCount)
+            MP4TagsAddArtwork(tags, &newArtwork);
+        else
+            MP4TagsSetArtwork(tags, 0, &newArtwork);
     }
 
     success = MP4TagsStore(tags, fileHandle);
