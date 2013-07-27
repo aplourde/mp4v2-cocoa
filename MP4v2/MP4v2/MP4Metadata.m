@@ -19,6 +19,7 @@
 @synthesize longDescription;
 @synthesize hd;
 @synthesize type;
+@synthesize contentRating;
 @synthesize artwork;
 @synthesize studio;
 @synthesize screenFormat;
@@ -95,7 +96,24 @@
     MP4TagsFree(tags);
 
     /* read the remaining iTMF items */
-    MP4ItmfItemList *list = MP4ItmfGetItemsByMeaning(sourceHandle, "com.apple.iTunes", "iTunMOVI");
+    MP4ItmfItemList *list = MP4ItmfGetItemsByMeaning(sourceHandle, "com.apple.iTunes", "iTunEXTC");
+    if (list) {
+        uint32_t i;
+        for (i = 0; i < list->size; i++) {
+            MP4ItmfItem *item = &list->elements[i];
+            uint32_t j;
+            for (j = 0; j < item->dataList.size; j++) {
+                MP4ItmfData *data = &item->dataList.elements[j];
+                NSString *rating = [[NSString alloc] initWithBytes:data->value length:data->valueSize encoding:NSUTF8StringEncoding];
+                if (rating != nil) {
+                    self.contentRating = rating;
+                }
+            }
+        }
+        MP4ItmfItemListFree(list);
+    }
+
+    list = MP4ItmfGetItemsByMeaning(sourceHandle, "com.apple.iTunes", "iTunMOVI");
     if (list) {
         uint32_t i;
         for (i = 0; i < list->size; i++) {
@@ -189,6 +207,40 @@
     }
 
     /* Rewrite extended metadata using the generic iTMF api */
+    if (self.contentRating) {
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
+        MP4ItmfItemListFree(list);
+
+        MP4ItmfItem* newItem = MP4ItmfItemAlloc( "----", 1 );
+        newItem->mean = strdup( "com.apple.iTunes" );
+        newItem->name = strdup( "iTunEXTC" );
+
+        MP4ItmfData* data = &newItem->dataList.elements[0];
+        char *contentRating = [self.contentRating cStringUsingEncoding:NSUTF8StringEncoding];
+        data->typeCode = MP4_ITMF_BT_UTF8;
+        data->valueSize = strlen(contentRating);
+        data->value = (uint8_t*)malloc( data->valueSize );
+        memcpy( data->value, contentRating, data->valueSize );
+
+        MP4ItmfAddItem(fileHandle, newItem);
+    } else {
+        MP4ItmfItemList* list = MP4ItmfGetItemsByMeaning(fileHandle, "com.apple.iTunes", "iTunEXTC");
+        if (list) {
+            uint32_t i;
+            for (i = 0; i < list->size; i++) {
+                MP4ItmfItem* item = &list->elements[i];
+                MP4ItmfRemoveItem(fileHandle, item);
+            }
+        }
+    }
+
     if (self.cast || self.directors || self.producers || self.screenwriters || self.studio) {
 
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
@@ -278,6 +330,7 @@
     NSLog(@"screenwriters : %@", self.screenwriters);
     NSLog(@"producers : %@", self.producers);
     NSLog(@"studio : %@", self.studio);
+    NSLog(@"contentRating : %@", self.contentRating);
 }
 
 @end

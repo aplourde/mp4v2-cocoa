@@ -25,6 +25,7 @@ typedef enum {
     NSString *longDescription;
     BOOL hd;
     MP4MediaType type;
+    NSString *contentRating;
     NSImage *artwork;
     NSString *studio;
     NSString *screenFormat;
@@ -49,6 +50,7 @@ typedef enum {
 @property(nonatomic, retain) NSString *longDescription;
 @property(nonatomic) BOOL hd;
 @property(nonatomic) MP4MediaType type;
+@property(nonatomic) NSString *contentRating;
 @property(nonatomic, retain) NSImage *artwork;
 @property(nonatomic, retain) NSString *studio;
 @property(nonatomic, retain) NSString *screenFormat;
