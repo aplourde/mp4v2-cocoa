@@ -223,11 +223,11 @@
         newItem->name = strdup( "iTunEXTC" );
 
         MP4ItmfData* data = &newItem->dataList.elements[0];
-        char *contentRating = [self.contentRating cStringUsingEncoding:NSUTF8StringEncoding];
+        char *contentRatingString = [self.contentRating cStringUsingEncoding:NSUTF8StringEncoding];
         data->typeCode = MP4_ITMF_BT_UTF8;
-        data->valueSize = strlen(contentRating);
+        data->valueSize = strlen(contentRatingString);
         data->value = (uint8_t*)malloc( data->valueSize );
-        memcpy( data->value, contentRating, data->valueSize );
+        memcpy( data->value, contentRatingString, data->valueSize );
 
         MP4ItmfAddItem(fileHandle, newItem);
     } else {
