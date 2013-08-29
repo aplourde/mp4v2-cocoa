@@ -4,6 +4,10 @@ This cocoa framework allows you to manipulate MP4 files. It's basically a wrappe
 
 Right now, it only allows you to perform metadata manipulation, but subtitles and audio tracks management is on the roadmap.
 
+![Cocoa Framework Logo](http://anthonyplourde.com/img/cocoa-framework.png)
+
+[Download MP4v2.framework](http://anthonyplourde.com/files/MP4v2.framework.zip)
+
 To get started, you need to have the following import : 
 
 ``` objc
