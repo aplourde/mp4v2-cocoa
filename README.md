@@ -16,6 +16,12 @@ NSError *error;
 MP4File *file = [[MP4File alloc] initWithFilePath:@"/path/to/your/file.mp4" outError:&error];
 ```
 
+## Video Size
+
+```objc
+CGSize videoSize = [file videoSize];
+```
+
 ## Metadata Modification
 
 ``` objc
