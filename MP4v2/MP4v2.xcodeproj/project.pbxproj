@@ -387,6 +387,7 @@
 				MACH_O_TYPE = mh_dylib;
 				PRELINK_LIBS = mp4v2.2.dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -414,6 +415,7 @@
 				MACH_O_TYPE = mh_dylib;
 				PRELINK_LIBS = mp4v2.2.dylib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx10.8;
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
