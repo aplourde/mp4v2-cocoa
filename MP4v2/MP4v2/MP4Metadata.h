@@ -23,6 +23,9 @@ typedef enum {
     NSString *releaseDate;
     NSString *shortDescription;
     NSString *longDescription;
+    NSString *show;
+    NSInteger season;
+    NSInteger episode;
     BOOL hd;
     MP4MediaType type;
     NSString *contentRating;
@@ -48,6 +51,9 @@ typedef enum {
 @property(nonatomic, retain) NSString *releaseDate;
 @property(nonatomic, retain) NSString *shortDescription;
 @property(nonatomic, retain) NSString *longDescription;
+@property(nonatomic, retain) NSString *show;
+@property(nonatomic) NSInteger season;
+@property(nonatomic) NSInteger episode;
 @property(nonatomic) BOOL hd;
 @property(nonatomic) MP4MediaType type;
 @property(nonatomic) NSString *contentRating;
