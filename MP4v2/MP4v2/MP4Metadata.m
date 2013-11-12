@@ -17,6 +17,9 @@
 @synthesize releaseDate;
 @synthesize shortDescription;
 @synthesize longDescription;
+@synthesize show;
+@synthesize episode;
+@synthesize season;
 @synthesize hd;
 @synthesize type;
 @synthesize contentRating;
@@ -49,6 +52,9 @@
     self.releaseDate = nil;
     self.shortDescription = nil;
     self.longDescription = nil;
+    self.episode = 0;
+    self.season = 0;
+    self.show = nil;
     self.hd = NO;
     self.type = MP4MediaTypeMovie;
     self.artwork = nil;
@@ -75,6 +81,15 @@
     }
     if (tags->longDescription) {
         self.longDescription = [NSString stringWithCString:tags->longDescription encoding:NSUTF8StringEncoding];
+    }
+    if (tags->tvShow) {
+        self.show = [NSString stringWithCString:tags->tvShow encoding:NSUTF8StringEncoding];
+    }
+    if (tags->tvEpisode) {
+        self.episode = *tags->tvEpisode;
+    }
+    if (tags->tvSeason) {
+        self.season = *tags->tvSeason;
     }
     if (tags->hdVideo) {
         self.hd = *tags->hdVideo;
@@ -176,6 +191,17 @@
     }
     if (self.longDescription) {
         MP4TagsSetLongDescription(tags, [self.longDescription UTF8String]);
+    }
+    if (self.show) {
+        MP4TagsSetTVShow(tags, [self.show UTF8String]);
+    }
+    if (self.episode) {
+        const uint32_t i = self.episode;
+        MP4TagsSetTVEpisode(tags, &i);
+    }
+    if (self.season) {
+        const uint32_t i = self.season;
+        MP4TagsSetTVSeason(tags, &i);
     }
     uint8_t mediaType = self.type ? (uint8_t) self.type : 9;
     MP4TagsSetMediaType(tags, &mediaType);
@@ -321,6 +347,9 @@
     NSLog(@"releaseDate : %@", self.releaseDate);
     NSLog(@"shortDescription : %@", self.shortDescription);
     NSLog(@"longDescription : %@", self.longDescription);
+    NSLog(@"show : %@", self.show);
+    NSLog(@"episode : %li", self.episode);
+    NSLog(@"season :%li@", self.season);
     NSLog(@"hd : %c", self.hd);
     NSLog(@"screenFormat : %@", self.screenFormat);
     NSLog(@"type : %u", self.type);
