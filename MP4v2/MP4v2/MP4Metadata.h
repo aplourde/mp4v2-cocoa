@@ -16,6 +16,7 @@ typedef enum {
 
 @interface MP4Metadata : NSObject {
 
+    NSInteger contentId;
     NSString *sourcePath;
     NSString *name;
     NSString *comments;
@@ -44,6 +45,7 @@ typedef enum {
 
 - (BOOL)writeMetadataWithFileHandle:(MP4FileHandle *)fileHandle;
 
+@property(nonatomic) NSInteger contentId;
 @property(nonatomic, retain) NSString *sourcePath;
 @property(nonatomic, retain) NSString *name;
 @property(nonatomic, retain) NSString *comments;

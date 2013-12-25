@@ -10,6 +10,7 @@
 
 @implementation MP4Metadata
 
+@synthesize contentId;
 @synthesize sourcePath;
 @synthesize name;
 @synthesize comments;
@@ -96,6 +97,9 @@
     }
     if (tags->mediaType) {
         self.type = (MP4MediaType) *tags->mediaType;
+    }
+    if (tags->contentID) {
+        self.contentId = *tags->contentID;
     }
 
     if (tags->artwork) {
@@ -203,6 +207,11 @@
         const uint32_t i = self.season;
         MP4TagsSetTVSeason(tags, &i);
     }
+    if (self.contentId) {
+        const uint32_t i = self.contentId;
+        MP4TagsSetContentID(tags, &i);
+    }
+    
     uint8_t mediaType = self.type ? (uint8_t) self.type : 9;
     MP4TagsSetMediaType(tags, &mediaType);
 
