@@ -37,6 +37,12 @@ typedef enum {
     NSArray *directors;
     NSArray *screenwriters;
     NSArray *producers;
+    
+    NSString *artist;
+    NSString *albumArtist;
+    NSString *album;
+    uint8_t trackIndex;
+    uint8_t trackTotal;
 }
 
 - (id)initWithFilePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle;
@@ -67,5 +73,10 @@ typedef enum {
 @property(nonatomic, retain) NSArray *screenwriters;
 @property(nonatomic, retain) NSArray *producers;
 
+@property(nonatomic, retain) NSString *artist;
+@property(nonatomic, retain) NSString *albumArtist;
+@property(nonatomic, retain) NSString *album;
+@property(nonatomic) uint8_t trackIndex;
+@property(nonatomic) uint8_t trackTotal;
 
 @end
