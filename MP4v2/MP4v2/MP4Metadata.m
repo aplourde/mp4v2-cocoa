@@ -32,6 +32,12 @@
 @synthesize screenwriters;
 @synthesize producers;
 
+@synthesize artist;
+@synthesize albumArtist;
+@synthesize album;
+@synthesize trackIndex;
+@synthesize trackTotal;
+
 - (id)initWithFilePath:(NSString *)source fileHandle:(MP4FileHandle)fileHandle {
 
     if ((self = [super init])) {
@@ -64,7 +70,13 @@
     self.screenwriters = nil;
     self.producers = nil;
     self.studio = nil;
-
+    
+    self.artist = nil;
+    self.albumArtist = nil;
+    self.album = nil;
+    self.trackIndex = 0;
+    self.trackTotal = 0;
+    
     if (tags->name) {
         self.name = [NSString stringWithCString:tags->name encoding:NSUTF8StringEncoding];
     }
@@ -110,6 +122,23 @@
             self.artwork = [[NSImage alloc] initWithSize:[imageRep size]];
             [self.artwork addRepresentation:imageRep];
         }
+    }
+    
+    if (tags->artist) {
+        self.artist = [NSString stringWithCString:tags->artist encoding:NSUTF8StringEncoding];
+    }
+    
+    if (tags->albumArtist) {
+        self.albumArtist = [NSString stringWithCString:tags->albumArtist encoding:NSUTF8StringEncoding];
+    }
+    
+    if (tags->album) {
+        self.album = [NSString stringWithCString:tags->album encoding:NSUTF8StringEncoding];
+    }
+    
+    if (tags->track) {
+        self.trackIndex = tags->track->index;
+        self.trackTotal = tags->track->total;
     }
 
     MP4TagsFree(tags);
@@ -211,6 +240,25 @@
         const uint32_t i = self.contentId;
         MP4TagsSetContentID(tags, &i);
     }
+
+    if (self.artist) {
+        MP4TagsSetArtist(tags, [self.artist UTF8String]);
+    };
+
+    if (self.albumArtist) {
+        MP4TagsSetAlbumArtist(tags, [self.albumArtist UTF8String]);
+    };
+    
+    if (self.album) {
+        MP4TagsSetAlbum(tags, [self.album UTF8String]);
+    };
+    
+    if (self.trackIndex && self.trackTotal) {
+        MP4TagTrack track;
+        track.index = self.trackIndex;
+        track.total = self.trackTotal;
+        MP4TagsSetTrack(tags, &track);
+    };
     
     uint8_t mediaType = self.type ? (uint8_t) self.type : 9;
     MP4TagsSetMediaType(tags, &mediaType);
@@ -369,6 +417,10 @@
     NSLog(@"producers : %@", self.producers);
     NSLog(@"studio : %@", self.studio);
     NSLog(@"contentRating : %@", self.contentRating);
+    NSLog(@"artist : %@", self.artist);
+    NSLog(@"albumArtist : %@", self.albumArtist);
+    NSLog(@"album : %@", self.album);
+    NSLog(@"track : <%d of %d>", self.trackIndex, self.trackTotal);
 }
 
 @end
